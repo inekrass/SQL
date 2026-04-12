@@ -1,0 +1,57 @@
+@startuml
+
+entity customers_3nf {
+  * customer_id : integer <<PK>>
+  --
+  customer_name : text
+  customer_email : text
+  customer_phone : text
+}
+
+entity addresses {
+  * address_id : integer <<PK>>
+  --
+  customer_id : integer <<FK>>
+  address : text
+}
+
+entity categories {
+  * category_id : integer <<PK>>
+  --
+  category_name : text
+}
+
+entity products_3nf {
+  * product_id : integer <<PK>>
+  --
+  product_name : text
+  category_id : integer <<FK>>
+  product_price : numeric
+}
+
+entity orders_3nf {
+  * order_id : integer <<PK>>
+  --
+  customer_id : integer <<FK>>
+  address_id : integer <<FK>>
+  order_date : date
+  status : text
+  total_amount : numeric
+}
+
+entity order_items_3nf {
+  * order_id : integer <<FK>>
+  * product_id : integer <<FK>>
+  --
+  quantity : integer
+  price_at_order : numeric
+}
+
+customers_3nf ||--o{ addresses
+customers_3nf ||--o{ orders_3nf
+addresses ||--o{ orders_3nf
+categories ||--o{ products_3nf
+orders_3nf ||--o{ order_items_3nf
+products_3nf ||--o{ order_items_3nf
+
+@enduml
