@@ -1,0 +1,63 @@
+NOTICE:  index "idx_customers_3nf_email" does not exist, skipping
+DROP INDEX
+CREATE INDEX
+                                                                QUERY PLAN                                                                 
+-------------------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using idx_customers_3nf_email on customers_3nf  (cost=0.28..8.29 rows=1 width=50) (actual time=0.026..0.026 rows=1.00 loops=1)
+   Index Cond: (customer_email = 'client1@mail.ru'::text)
+   Index Searches: 1
+   Buffers: shared hit=1 read=2
+ Planning:
+   Buffers: shared hit=16 read=1
+ Planning Time: 0.185 ms
+ Execution Time: 0.078 ms
+(8 rows)
+
+NOTICE:  index "idx_customers_3nf_name_btree" does not exist, skipping
+DROP INDEX
+CREATE INDEX
+                                                   QUERY PLAN                                                   
+----------------------------------------------------------------------------------------------------------------
+ Seq Scan on customers_3nf  (cost=0.00..23.50 rows=111 width=50) (actual time=0.021..0.523 rows=112.00 loops=1)
+   Filter: (customer_name ~~* '%Клиент 1%'::text)
+   Rows Removed by Filter: 888
+   Buffers: shared hit=11
+ Planning:
+   Buffers: shared hit=16 read=1
+ Planning Time: 0.123 ms
+ Execution Time: 0.535 ms
+(8 rows)
+
+NOTICE:  index "idx_customers_3nf_name_trgm" does not exist, skipping
+DROP INDEX
+CREATE INDEX
+                                                   QUERY PLAN                                                   
+----------------------------------------------------------------------------------------------------------------
+ Seq Scan on customers_3nf  (cost=0.00..23.50 rows=111 width=50) (actual time=0.022..0.498 rows=112.00 loops=1)
+   Filter: (customer_name ~~* '%Клиент 1%'::text)
+   Rows Removed by Filter: 888
+   Buffers: shared hit=11
+ Planning:
+   Buffers: shared hit=25
+ Planning Time: 0.147 ms
+ Execution Time: 0.511 ms
+(8 rows)
+
+SET
+                                                                 QUERY PLAN                                                                 
+--------------------------------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on customers_3nf  (cost=31.30..43.69 rows=111 width=50) (actual time=0.049..0.113 rows=112.00 loops=1)
+   Recheck Cond: (customer_name ~~* '%Клиент 1%'::text)
+   Heap Blocks: exact=11
+   Buffers: shared hit=24
+   ->  Bitmap Index Scan on idx_customers_3nf_name_trgm  (cost=0.00..31.28 rows=111 width=0) (actual time=0.040..0.040 rows=112.00 loops=1)
+         Index Cond: (customer_name ~~* '%Клиент 1%'::text)
+         Index Searches: 1
+         Buffers: shared hit=13
+ Planning:
+   Buffers: shared hit=1
+ Planning Time: 0.094 ms
+ Execution Time: 0.126 ms
+(12 rows)
+
+SET

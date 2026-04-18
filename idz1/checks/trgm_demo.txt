@@ -1,0 +1,39 @@
+DROP INDEX IF EXISTS idx_customers_3nf_name_trgm;
+
+CREATE INDEX idx_customers_3nf_name_trgm
+ON customers_3nf
+USING GIN (customer_name gin_trgm_ops);
+
+SET enable_seqscan = OFF;
+
+EXPLAIN ANALYZE
+SELECT
+    customer_id,
+    customer_name,
+    customer_email,
+    customer_phone
+FROM customers_3nf
+WHERE customer_name ILIKE '%Клиент 1%';
+
+SET enable_seqscan = ON;
+
+
+Вывод:
+SET
+                                                                 QUERY PLAN                                                                 
+--------------------------------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on customers_3nf  (cost=31.30..43.69 rows=111 width=50) (actual time=0.049..0.113 rows=112.00 loops=1)
+   Recheck Cond: (customer_name ~~* '%Клиент 1%'::text)
+   Heap Blocks: exact=11
+   Buffers: shared hit=24
+   ->  Bitmap Index Scan on idx_customers_3nf_name_trgm  (cost=0.00..31.28 rows=111 width=0) (actual time=0.040..0.040 rows=112.00 loops=1)
+         Index Cond: (customer_name ~~* '%Клиент 1%'::text)
+         Index Searches: 1
+         Buffers: shared hit=13
+ Planning:
+   Buffers: shared hit=1
+ Planning Time: 0.094 ms
+ Execution Time: 0.126 ms
+(12 rows)
+
+SET

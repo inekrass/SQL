@@ -1,0 +1,31 @@
+                                                 QUERY PLAN                                                 
+------------------------------------------------------------------------------------------------------------
+ Seq Scan on customers_3nf  (cost=0.00..23.50 rows=1 width=50) (actual time=0.605..1.069 rows=1.00 loops=1)
+   Filter: (customer_email = 'client1@mail.ru'::text)
+   Rows Removed by Filter: 999
+   Buffers: shared read=11
+ Planning:
+   Buffers: shared hit=64 read=25 dirtied=1
+ Planning Time: 6.203 ms
+ Execution Time: 1.173 ms
+(8 rows)
+
+NOTICE:  index "idx_customers_3nf_email" does not exist, skipping
+DROP INDEX
+CREATE INDEX
+
+                                                   QUERY PLAN                                                   
+----------------------------------------------------------------------------------------------------------------
+ Seq Scan on customers_3nf  (cost=0.00..23.50 rows=111 width=50) (actual time=0.023..0.504 rows=112.00 loops=1)
+   Filter: (customer_name ~~* '%Клиент 1%'::text)
+   Rows Removed by Filter: 888
+   Buffers: shared hit=11
+ Planning:
+   Buffers: shared hit=1 read=1
+ Planning Time: 0.553 ms
+ Execution Time: 0.514 ms
+(8 rows)
+
+NOTICE:  index "idx_customers_3nf_name_btree" does not exist, skipping
+DROP INDEX
+CREATE INDEX

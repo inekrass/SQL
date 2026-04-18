@@ -1,0 +1,52 @@
+NOTICE:  materialized view "mv_monthly_sales" does not exist, skipping
+DROP MATERIALIZED VIEW
+SELECT 73
+                                                                  QUERY PLAN                                                                   
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=206.65..247.52 rows=2335 width=112) (actual time=2.024..2.048 rows=73.00 loops=1)
+   Group Key: date_trunc('month'::text, (o.order_date)::timestamp with time zone), p.product_name, c.category_name
+   Batches: 1  Memory Usage: 121kB
+   Buffers: shared hit=25
+   ->  Hash Join  (cost=97.30..165.79 rows=2335 width=81) (actual time=0.171..1.409 rows=2335.00 loops=1)
+         Hash Cond: (p.category_id = c.category_id)
+         Buffers: shared hit=25
+         ->  Hash Join  (cost=58.73..109.39 rows=2335 width=49) (actual time=0.162..0.916 rows=2335.00 loops=1)
+               Hash Cond: (oi.product_id = p.product_id)
+               Buffers: shared hit=24
+               ->  Hash Join  (cost=30.50..75.00 rows=2335 width=17) (actual time=0.156..0.620 rows=2335.00 loops=1)
+                     Hash Cond: (oi.order_id = o.order_id)
+                     Buffers: shared hit=23
+                     ->  Seq Scan on order_items_3nf oi  (cost=0.00..38.35 rows=2335 width=17) (actual time=0.002..0.133 rows=2335.00 loops=1)
+                           Buffers: shared hit=15
+                     ->  Hash  (cost=18.00..18.00 rows=1000 width=8) (actual time=0.153..0.153 rows=1002.00 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 48kB
+                           Buffers: shared hit=8
+                           ->  Seq Scan on orders_3nf o  (cost=0.00..18.00 rows=1000 width=8) (actual time=0.002..0.067 rows=1002.00 loops=1)
+                                 Buffers: shared hit=8
+               ->  Hash  (cost=18.10..18.10 rows=810 width=40) (actual time=0.003..0.003 rows=7.00 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                     Buffers: shared hit=1
+                     ->  Seq Scan on products_3nf p  (cost=0.00..18.10 rows=810 width=40) (actual time=0.001..0.002 rows=7.00 loops=1)
+                           Buffers: shared hit=1
+         ->  Hash  (cost=22.70..22.70 rows=1270 width=36) (actual time=0.006..0.006 rows=3.00 loops=1)
+               Buckets: 2048  Batches: 1  Memory Usage: 17kB
+               Buffers: shared hit=1
+               ->  Seq Scan on categories c  (cost=0.00..22.70 rows=1270 width=36) (actual time=0.003..0.004 rows=3.00 loops=1)
+                     Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=13
+ Planning Time: 0.176 ms
+ Execution Time: 2.074 ms
+(34 rows)
+
+                                                    QUERY PLAN                                                     
+-------------------------------------------------------------------------------------------------------------------
+ Seq Scan on mv_monthly_sales  (cost=0.00..15.80 rows=580 width=112) (actual time=0.002..0.006 rows=73.00 loops=1)
+   Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=15
+ Planning Time: 0.027 ms
+ Execution Time: 0.011 ms
+(6 rows)
+
+REFRESH MATERIALIZED VIEW
