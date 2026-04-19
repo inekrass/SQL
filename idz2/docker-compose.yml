@@ -1,0 +1,25 @@
+services:
+  clickhouse-server:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: idz2_nekrasov
+    environment:
+      CLICKHOUSE_SKIP_USER_SETUP: "1"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - ./config/config.d:/etc/clickhouse-server/config.d:ro
+      - ./config/users.d:/etc/clickhouse-server/users.d:ro
+      - ./sql:/sql:ro
+      - ./scripts:/scripts
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    restart: unless-stopped
+
+volumes:
+  clickhouse_data:
+  clickhouse_logs:
