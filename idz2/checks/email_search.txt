@@ -1,0 +1,23 @@
+    ┌─customer_id─┬─customer_name─┬─customer_email────┐
+ 1. │           1 │ Клиент 91     │ client91@mail.ru  │
+ 2. │           2 │ Клиент 495    │ client495@mail.ru │
+ 3. │           3 │ Клиент 34     │ client34@mail.ru  │
+ 4. │           4 │ Клиент 794    │ client794@mail.ru │
+ 5. │           5 │ Клиент 797    │ client797@mail.ru │
+ 6. │           6 │ Клиент 952    │ client952@mail.ru │
+ 7. │           7 │ Клиент 725    │ client725@mail.ru │
+ 8. │           8 │ Клиент 737    │ client737@mail.ru │
+ 9. │           9 │ Клиент 322    │ client322@mail.ru │
+10. │          10 │ Клиент 487    │ client487@mail.ru │
+11. │          11 │ Клиент 866    │ client866@mail.ru │
+12. │          12 │ Клиент 608    │ client608@mail.ru │
+13. │          13 │ Клиент 258    │ client258@mail.ru │
+14. │          14 │ Клиент 652    │ client652@mail.ru │
+15. │          15 │ Клиент 346    │ client346@mail.ru │
+16. │          16 │ Клиент 255    │ client255@mail.ru │
+17. │          17 │ Клиент 532    │ client532@mail.ru │
+18. │          18 │ Клиент 927    │ client927@mail.ru │
+19. │          19 │ Клиент 534    │ client534@mail.ru │
+20. │          20 │ Клиент 424    │ client424@mail.ru │
+    └─────────────┴───────────────┴───────────────────┘
+0.010
