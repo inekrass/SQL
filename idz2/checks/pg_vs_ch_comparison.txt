@@ -1,0 +1,149 @@
+=== PostgreSQL: INSERT 1 ROW ===
+ Insert on orders_3nf  (cost=0.00..0.01 rows=0 width=0) (actual time=2.392..2.393 rows=0.00 loops=1)
+   Buffers: shared hit=28 read=7 dirtied=2
+   ->  Result  (cost=0.00..0.01 rows=1 width=80) (actual time=0.098..0.098 rows=1.00 loops=1)
+ Planning Time: 2.959 ms
+ Trigger for constraint orders_3nf_customer_id_fkey: time=15.274 calls=1
+ Trigger for constraint orders_3nf_address_id_fkey: time=1.221 calls=1
+ Execution Time: 19.080 ms
+(7 rows)
+
+=== ClickHouse: INSERT 1 ROW ===
+0.011
+
+=== PostgreSQL: TOP-10 PRODUCTS ===
+
+ Limit  (cost=17152.93..17152.95 rows=10 width=68) (actual time=164.183..169.385 rows=7.00 loops=1)
+   Buffers: shared hit=4140 read=2254
+   ->  Sort  (cost=17152.93..17154.95 rows=810 width=68) (actual time=164.170..169.370 rows=7.00 loops=1)
+         Sort Key: (sum(((oi.quantity)::numeric * oi.price_at_order))) DESC
+         Sort Method: quicksort  Memory: 25kB
+         Buffers: shared hit=4140 read=2254
+         ->  Finalize GroupAggregate  (cost=16884.31..17135.43 rows=810 width=68) (actual time=164.067..169.276 rows=7.00 loops=1)
+               Group Key: p.product_id
+               Buffers: shared hit=4137 read=2254
+               ->  Gather Merge  (cost=16884.31..17110.72 rows=1944 width=68) (actual time=164.051..169.253 rows=21.00 loops=1)
+                     Workers Planned: 2
+                     Workers Launched: 2
+                     Buffers: shared hit=4137 read=2254
+                     ->  Sort  (cost=15884.29..15886.31 rows=810 width=68) (actual time=153.247..153.251 rows=7.00 loops=3)
+                           Sort Key: p.product_id
+                           Sort Method: quicksort  Memory: 25kB
+                           Buffers: shared hit=4137 read=2254
+                           Worker 0:  Sort Method: quicksort  Memory: 25kB
+                           Worker 1:  Sort Method: quicksort  Memory: 25kB
+                           ->  Partial HashAggregate  (cost=15835.03..15845.16 rows=810 width=68) (actual time=153.135..153.144 rows=7.00 loops=3)
+                                 Group Key: p.product_id
+                                 Batches: 1  Memory Usage: 49kB
+                                 Buffers: shared hit=4123 read=2254
+                                 Worker 0:  Batches: 1  Memory Usage: 49kB
+                                 Worker 1:  Batches: 1  Memory Usage: 49kB
+                                 ->  Hash Join  (cost=28.23..11668.36 rows=416667 width=45) (actual time=0.439..97.132 rows=333333.33 loops=3)
+                                       Hash Cond: (oi.product_id = p.product_id)
+                                       Buffers: shared hit=4123 read=2254
+                                       ->  Parallel Seq Scan on order_items_3nf oi  (cost=0.00..10540.67 rows=416667 width=13) (actual time=0.314..39.299 rows=333333.33 loops=3)
+                                             Buffers: shared hit=4120 read=2254
+                                       ->  Hash  (cost=18.10..18.10 rows=810 width=36) (actual time=0.086..0.086 rows=7.00 loops=3)
+                                             Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                             Buffers: shared hit=3
+                                             ->  Seq Scan on products_3nf p  (cost=0.00..18.10 rows=810 width=36) (actual time=0.053..0.055 rows=7.00 loops=3)
+                                                   Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=184 read=11 dirtied=4
+ Planning Time: 4.148 ms
+ Execution Time: 169.691 ms
+
+=== ClickHouse: TOP-10 PRODUCTS ===
+
+ 5       Ноутбук 12142590000
+4       Монитор 3142876000
+2       Клавиатура      499999500
+7       Кабель HDMI     257144400
+1       Мышь    214288500
+6       Мышь    171428400
+3       Коврик  142857000
+1       Test Product    1000
+0.044
+
+=== PostgreSQL: JOIN 4 TABLES ===
+ Nested Loop  (cost=1.27..33.39 rows=1 width=95) (actual time=0.060..0.073 rows=2.00 loops=1)
+   Buffers: shared hit=22
+   ->  Nested Loop  (cost=1.12..25.20 rows=1 width=67) (actual time=0.053..0.063 rows=2.00 loops=1)
+         Buffers: shared hit=18
+         ->  Index Scan using order_items_3nf_pkey on order_items_3nf oi  (cost=0.42..8.44 rows=1 width=17) (actual time=0.023..0.024 rows=2.00 loops=1)
+               Index Cond: (order_id = 1)
+               Index Searches: 1
+               Buffers: shared hit=4
+         ->  Nested Loop  (cost=0.70..16.75 rows=1 width=54) (actual time=0.016..0.018 rows=1.00 loops=2)
+               Buffers: shared hit=14
+               ->  Index Scan using orders_3nf_pkey on orders_3nf o  (cost=0.42..8.44 rows=1 width=25) (actual time=0.011..0.011 rows=1.00 loops=2)
+                     Index Cond: (order_id = 1)
+                     Index Searches: 2
+                     Buffers: shared hit=8
+               ->  Index Scan using customers_3nf_pkey on customers_3nf c  (cost=0.28..8.29 rows=1 width=37) (actual time=0.002..0.002 rows=1.00 loops=2)
+                     Index Cond: (customer_id = o.customer_id)
+                     Index Searches: 2
+                     Buffers: shared hit=6
+   ->  Index Scan using products_3nf_pkey on products_3nf p  (cost=0.15..8.17 rows=1 width=36) (actual time=0.003..0.003 rows=1.00 loops=2)
+         Index Cond: (product_id = oi.product_id)
+         Index Searches: 2
+         Buffers: shared hit=4
+ Planning:
+   Buffers: shared hit=6
+ Planning Time: 0.484 ms
+ Execution Time: 0.122 ms
+
+=== PostgreSQL: UPDATE STATUS ===
+ Update on orders_3nf  (cost=0.42..8.44 rows=0 width=0) (actual time=0.501..0.501 rows=0.00 loops=1)
+   Buffers: shared hit=12 read=2 dirtied=1
+   ->  Index Scan using orders_3nf_pkey on orders_3nf  (cost=0.42..8.44 rows=1 width=38) (actual time=0.088..0.089 rows=1.00 loops=1)
+         Index Cond: (order_id = 1)
+         Index Searches: 1
+         Buffers: shared hit=4
+ Planning:
+   Buffers: shared hit=3
+ Planning Time: 0.555 ms
+ Execution Time: 1.002 ms
+
+=== ClickHouse: ALTER UPDATE ===
+0.007
+
+=== PostgreSQL: SIZE ON DISK ===
+ total_3nf_size 
+----------------
+ 163 MB
+
+=== ClickHouse: SIZE ON DISK ===
+24.44 MiB
+
+=== PostgreSQL: SUBSTRING SEARCH ===
+ Seq Scan on customers_3nf  (cost=0.00..23.50 rows=1000 width=50) (actual time=0.234..2.206 rows=1000.00 loops=1)
+   Filter: (customer_email ~~* '%mail%'::text)
+   Buffers: shared hit=2 read=9
+ Planning:
+   Buffers: shared hit=7
+ Planning Time: 2.092 ms
+ Execution Time: 2.409 ms
+
+=== ClickHouse: SUBSTRING SEARCH ===
+1       Клиент 91       client91@mail.ru
+1       Test Client     test_insert@mail.ru
+2       Клиент 495      client495@mail.ru
+3       Клиент 34       client34@mail.ru
+4       Клиент 794      client794@mail.ru
+5       Клиент 797      client797@mail.ru
+6       Клиент 952      client952@mail.ru
+7       Клиент 725      client725@mail.ru
+8       Клиент 737      client737@mail.ru
+9       Клиент 322      client322@mail.ru
+10      Клиент 487      client487@mail.ru
+11      Клиент 866      client866@mail.ru
+12      Клиент 608      client608@mail.ru
+13      Клиент 258      client258@mail.ru
+14      Клиент 652      client652@mail.ru
+15      Клиент 346      client346@mail.ru
+16      Клиент 255      client255@mail.ru
+17      Клиент 532      client532@mail.ru
+18      Клиент 927      client927@mail.ru
+19      Клиент 534      client534@mail.ru
+0.169
