@@ -1,0 +1,14 @@
+category	0.00 B	0.00 B	nan
+quantity	0.00 B	0.00 B	nan
+order_id	0.00 B	0.00 B	nan
+region	0.00 B	0.00 B	nan
+price	0.00 B	0.00 B	nan
+customer_id	0.00 B	0.00 B	nan
+product_id	0.00 B	0.00 B	nan
+order_datetime	0.00 B	0.00 B	nan
+customer_name	0.00 B	0.00 B	nan
+line_total	0.00 B	0.00 B	nan
+order_status	0.00 B	0.00 B	nan
+product_name	0.00 B	0.00 B	nan
+customer_email	0.00 B	0.00 B	nan
+order_date	0.00 B	0.00 B	nan
