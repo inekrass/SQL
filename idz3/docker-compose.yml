@@ -1,0 +1,45 @@
+services:
+    keeper1:
+        image: clickhouse/clickhouse-server:24.8
+        container_name: keeper1
+        hostname: keeper1
+        volumes:
+        - ./config/keeper/keeper1.xml:/etc/clickhouse-server/config.d/keeper.xml
+        - keeper1_data:/var/lib/clickhouse
+        ports:
+        - "9181:9181"
+        networks:
+        - clickhouse_net
+
+    keeper2:
+        image: clickhouse/clickhouse-server:24.8
+        container_name: keeper2
+        hostname: keeper2
+        volumes:
+        - ./config/keeper/keeper2.xml:/etc/clickhouse-server/config.d/keeper.xml
+        - keeper2_data:/var/lib/clickhouse
+        ports:
+        - "9182:9181"
+        networks:
+        - clickhouse_net
+
+    keeper3:
+        image: clickhouse/clickhouse-server:24.8
+        container_name: keeper3
+        hostname: keeper3
+        volumes:
+        - ./config/keeper/keeper3.xml:/etc/clickhouse-server/config.d/keeper.xml
+        - keeper3_data:/var/lib/clickhouse
+        ports:
+        - "9183:9181"
+        networks:
+        - clickhouse_net
+
+volumes:
+    keeper1_data:
+    keeper2_data:
+    keeper3_data:
+
+networks:
+    clickhouse_net:
+        driver: bridge
