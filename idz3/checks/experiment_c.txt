@@ -1,0 +1,67 @@
+=== Experiment C: data conflict check ===
+
+=== Step 1: stop replica 2 ===
+clickhouse2
+clickhouse2 stopped
+
+=== Step 2: insert data into replica 1 while replica 2 is down ===
+Inserted 10000 rows with event_type = experiment_c into clickhouse1
+
+=== Step 3: check data on available replicas ===
+Row 1:
+──────
+node:        clickhouse1
+event_type:  experiment_c
+rows:        10000
+sum_user_id: 49995000
+Row 1:
+──────
+node:        clickhouse3
+event_type:  experiment_c
+rows:        10000
+sum_user_id: 49995000
+
+=== Step 4: start replica 2 again ===
+clickhouse2
+clickhouse2 started
+
+=== Step 5: check that replica 2 received the same data ===
+Row 1:
+──────
+node:        clickhouse2
+event_type:  experiment_c
+rows:        10000
+sum_user_id: 49995000
+
+=== Replication status on replica 2 ===
+Row 1:
+──────
+current_node:     clickhouse2
+database:         default
+table:            events
+replica_name:     replica2
+is_readonly:      0
+total_replicas:   3
+active_replicas:  3
+queue_size:       0
+inserts_in_queue: 0
+merges_in_queue:  0
+absolute_delay:   0
+
+=== Final comparison on all replicas ===
+Row 1:
+──────
+node:        clickhouse1
+rows:        220000
+sum_user_id: 5599890000
+Row 1:
+──────
+node:        clickhouse2
+rows:        220000
+sum_user_id: 5599890000
+Row 1:
+──────
+node:        clickhouse3
+rows:        220000
+sum_user_id: 5599890000
+

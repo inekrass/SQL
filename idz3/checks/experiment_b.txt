@@ -1,0 +1,72 @@
+=== Experiment B: losing Keeper nodes ===
+
+=== Initial Keeper states ===
+--- keeper1 ---
+zk_server_state	follower
+--- keeper2 ---
+zk_server_state	leader
+--- keeper3 ---
+zk_server_state	follower
+
+=== Step 1: stop one Keeper node: keeper3 ===
+keeper3
+keeper3 stopped
+
+=== Step 2: check quorum with 2 of 3 Keeper nodes ===
+--- keeper1 ---
+zk_server_state	follower
+--- keeper2 ---
+zk_server_state	leader
+--- keeper3 ---
+keeper3 is unavailable
+
+=== Step 3: insert data while one Keeper is stopped ===
+Insert completed successfully with one Keeper stopped
+
+=== Check data inserted with one Keeper stopped ===
+Row 1:
+──────
+node:        clickhouse1
+event_type:  experiment_b_one_keeper_down
+rows:        10000
+sum_user_id: 49995000
+Row 1:
+──────
+node:        clickhouse2
+event_type:  experiment_b_one_keeper_down
+rows:        10000
+sum_user_id: 49995000
+Row 1:
+──────
+node:        clickhouse3
+event_type:  experiment_b_one_keeper_down
+rows:        10000
+sum_user_id: 49995000
+
+=== Step 4: stop second Keeper node: keeper2 ===
+keeper2
+keeper2 stopped
+
+=== Step 5: try INSERT without Keeper quorum ===
+Expected result: INSERT should fail or timeout because only 1 of 3 Keeper nodes is available.
+INSERT failed as expected: Keeper quorum is unavailable
+
+=== Step 6: SELECT still works locally ===
+Row 1:
+──────
+node: clickhouse1
+rows: 210000
+
+=== Step 7: start Keeper nodes again ===
+keeper2
+keeper3
+keeper2 and keeper3 started
+
+=== Keeper states after recovery ===
+--- keeper1 ---
+zk_server_state	leader
+--- keeper2 ---
+zk_server_state	follower
+--- keeper3 ---
+zk_server_state	follower
+

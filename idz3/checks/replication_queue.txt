@@ -1,0 +1,42 @@
+=== system.replication_queue after experiment A ===
+
+=== replication_queue on clickhouse1 ===
+
+=== replication_queue on clickhouse2 ===
+
+=== replication_queue on clickhouse3 ===
+
+=== system.replicas final queue status ===
+Row 1:
+──────
+current_node:     clickhouse1
+table:            events
+replica_name:     replica1
+queue_size:       0
+inserts_in_queue: 0
+merges_in_queue:  0
+absolute_delay:   0
+total_replicas:   3
+active_replicas:  3
+Row 1:
+──────
+current_node:     clickhouse2
+table:            events
+replica_name:     replica2
+queue_size:       0
+inserts_in_queue: 0
+merges_in_queue:  0
+absolute_delay:   0
+total_replicas:   3
+active_replicas:  3
+Row 1:
+──────
+current_node:     clickhouse3
+table:            events
+replica_name:     replica3
+queue_size:       0
+inserts_in_queue: 0
+merges_in_queue:  0
+absolute_delay:   0
+total_replicas:   3
+active_replicas:  3

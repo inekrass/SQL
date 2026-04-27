@@ -1,0 +1,90 @@
+=== Experiment A: losing one ClickHouse replica ===
+
+=== Initial row counts ===
+Row 1:
+──────
+node: clickhouse1
+rows: 100000
+Row 1:
+──────
+node: clickhouse2
+rows: 100000
+Row 1:
+──────
+node: clickhouse3
+rows: 100000
+
+=== Step 1: stop replica 3 ===
+clickhouse3
+clickhouse3 stopped
+
+=== Step 2: insert new data into replica 1 ===
+Inserted 100000 rows with event_type = experiment_a into clickhouse1
+
+=== Step 3: check that replica 2 received the data ===
+Row 1:
+──────
+node:        clickhouse1
+event_type:  experiment_a
+rows:        100000
+sum_user_id: 4999950000
+Row 1:
+──────
+node:        clickhouse2
+event_type:  experiment_a
+rows:        100000
+sum_user_id: 4999950000
+
+=== Step 4: start replica 3 ===
+clickhouse3
+clickhouse3 started
+
+=== Step 5: save replication queue while replica 3 is synchronizing ===
+
+=== Wait for synchronization ===
+
+=== Step 6: check that replica 3 caught up ===
+Row 1:
+──────
+node:        clickhouse3
+event_type:  experiment_a
+rows:        100000
+sum_user_id: 4999950000
+
+=== Replication status on all replicas after recovery ===
+Row 1:
+──────
+current_node:     clickhouse1
+table:            events
+replica_name:     replica1
+is_readonly:      0
+total_replicas:   3
+active_replicas:  3
+queue_size:       0
+inserts_in_queue: 0
+merges_in_queue:  0
+absolute_delay:   0
+Row 1:
+──────
+current_node:     clickhouse2
+table:            events
+replica_name:     replica2
+is_readonly:      0
+total_replicas:   3
+active_replicas:  3
+queue_size:       0
+inserts_in_queue: 0
+merges_in_queue:  0
+absolute_delay:   0
+Row 1:
+──────
+current_node:     clickhouse3
+table:            events
+replica_name:     replica3
+is_readonly:      0
+total_replicas:   3
+active_replicas:  3
+queue_size:       0
+inserts_in_queue: 0
+merges_in_queue:  0
+absolute_delay:   0
