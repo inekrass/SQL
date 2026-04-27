@@ -35,10 +35,67 @@ services:
         networks:
         - clickhouse_net
 
+    clickhouse1:
+        image: clickhouse/clickhouse-server:24.8
+        container_name: clickhouse1
+        hostname: clickhouse1
+        depends_on:
+            - keeper1
+            - keeper2
+            - keeper3
+        volumes:
+            - ./config/clickhouse/cluster.xml:/etc/clickhouse-server/config.d/cluster.xml
+            - ./config/clickhouse/node1_macros.xml:/etc/clickhouse-server/config.d/macros.xml
+            - clickhouse1_data:/var/lib/clickhouse
+        ports:
+            - "8123:8123"
+            - "9000:9000"
+        networks:
+            - clickhouse_net
+
+    clickhouse2:
+        image: clickhouse/clickhouse-server:24.8
+        container_name: clickhouse2
+        hostname: clickhouse2
+        depends_on:
+            - keeper1
+            - keeper2
+            - keeper3
+        volumes:
+            - ./config/clickhouse/cluster.xml:/etc/clickhouse-server/config.d/cluster.xml
+            - ./config/clickhouse/node2_macros.xml:/etc/clickhouse-server/config.d/macros.xml
+            - clickhouse2_data:/var/lib/clickhouse
+        ports:
+            - "8124:8123"
+            - "9001:9000"
+        networks:
+            - clickhouse_net
+
+    clickhouse3:
+        image: clickhouse/clickhouse-server:24.8
+        container_name: clickhouse3
+        hostname: clickhouse3
+        depends_on:
+            - keeper1
+            - keeper2
+            - keeper3
+        volumes:
+            - ./config/clickhouse/cluster.xml:/etc/clickhouse-server/config.d/cluster.xml
+            - ./config/clickhouse/node3_macros.xml:/etc/clickhouse-server/config.d/macros.xml
+            - clickhouse3_data:/var/lib/clickhouse
+        ports:
+            - "8125:8123"
+            - "9002:9000"
+        networks:
+            - clickhouse_net
+
 volumes:
     keeper1_data:
     keeper2_data:
     keeper3_data:
+    clickhouse1_data:
+    clickhouse2_data:
+    clickhouse3_data:
 
 networks:
     clickhouse_net:
