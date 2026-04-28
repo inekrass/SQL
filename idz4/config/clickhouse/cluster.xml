@@ -1,0 +1,42 @@
+<clickhouse>
+    <remote_servers>
+        <cluster_2x2>
+            <shard>
+                <replica>
+                    <host>ch-s1-r1</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>ch-s1-r2</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+
+            <shard>
+                <replica>
+                    <host>ch-s2-r1</host>
+                    <port>9000</port>
+                </replica>
+                <replica>
+                    <host>ch-s2-r2</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </cluster_2x2>
+    </remote_servers>
+
+    <zookeeper>
+        <node>
+            <host>keeper1</host>
+            <port>9181</port>
+        </node>
+        <node>
+            <host>keeper2</host>
+            <port>9181</port>
+        </node>
+        <node>
+            <host>keeper3</host>
+            <port>9181</port>
+        </node>
+    </zookeeper>
+</clickhouse>
