@@ -1,0 +1,14 @@
+<clickhouse>
+    <users>
+        <cluster>
+            <password>cluster</password>
+
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+
+            <profile>default</profile>
+            <quota>default</quota>
+        </cluster>
+    </users>
+</clickhouse>

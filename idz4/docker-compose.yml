@@ -50,6 +50,7 @@ services:
             - ./config/clickhouse/cluster.xml:/etc/clickhouse-server/config.d/cluster.xml:ro
             - ./config/clickhouse/s1r1_macros.xml:/etc/clickhouse-server/config.d/macros.xml:ro
             - ch-s1-r1-data:/var/lib/clickhouse
+            - ./config/clickhouse/cluster_user.xml:/etc/clickhouse-server/users.d/cluster_user.xml:ro
         networks:
             - clickhouse-net
 
@@ -68,6 +69,7 @@ services:
             - ./config/clickhouse/cluster.xml:/etc/clickhouse-server/config.d/cluster.xml:ro
             - ./config/clickhouse/s1r2_macros.xml:/etc/clickhouse-server/config.d/macros.xml:ro
             - ch-s1-r2-data:/var/lib/clickhouse
+            - ./config/clickhouse/cluster_user.xml:/etc/clickhouse-server/users.d/cluster_user.xml:ro
         networks:
             - clickhouse-net
 
@@ -86,6 +88,7 @@ services:
             - ./config/clickhouse/cluster.xml:/etc/clickhouse-server/config.d/cluster.xml:ro
             - ./config/clickhouse/s2r1_macros.xml:/etc/clickhouse-server/config.d/macros.xml:ro
             - ch-s2-r1-data:/var/lib/clickhouse
+            - ./config/clickhouse/cluster_user.xml:/etc/clickhouse-server/users.d/cluster_user.xml:ro
         networks:
             - clickhouse-net
 
@@ -104,6 +107,7 @@ services:
             - ./config/clickhouse/cluster.xml:/etc/clickhouse-server/config.d/cluster.xml:ro
             - ./config/clickhouse/s2r2_macros.xml:/etc/clickhouse-server/config.d/macros.xml:ro
             - ch-s2-r2-data:/var/lib/clickhouse
+            - ./config/clickhouse/cluster_user.xml:/etc/clickhouse-server/users.d/cluster_user.xml:ro
         networks:
             - clickhouse-net
 

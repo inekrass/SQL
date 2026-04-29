@@ -5,10 +5,14 @@
                 <replica>
                     <host>ch-s1-r1</host>
                     <port>9000</port>
+                    <user>cluster</user>
+                    <password>cluster</password>
                 </replica>
                 <replica>
                     <host>ch-s1-r2</host>
                     <port>9000</port>
+                    <user>cluster</user>
+                    <password>cluster</password>
                 </replica>
             </shard>
 
@@ -16,10 +20,14 @@
                 <replica>
                     <host>ch-s2-r1</host>
                     <port>9000</port>
+                    <user>cluster</user>
+                    <password>cluster</password>
                 </replica>
                 <replica>
                     <host>ch-s2-r2</host>
                     <port>9000</port>
+                    <user>cluster</user>
+                    <password>cluster</password>
                 </replica>
             </shard>
         </cluster_2x2>
