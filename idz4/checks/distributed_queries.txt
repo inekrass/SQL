@@ -1,0 +1,53 @@
+=== 1. Global count through events_distributed ===
+   ┌─distributed_rows─┐
+1. │          2000000 │ -- 2.00 million
+   └──────────────────┘
+
+=== 1. Sum of local rows, one replica per shard ===
+   ┌─local_rows_sum─┐
+1. │        2000000 │ -- 2.00 million
+   └────────────────┘
+
+=== 2. GROUP BY sharding key: top 10 users by events ===
+    ┌─user_id─┬─events_count─┐
+ 1. │       1 │           20 │
+ 2. │       2 │           20 │
+ 3. │       3 │           20 │
+ 4. │       4 │           20 │
+ 5. │       5 │           20 │
+ 6. │       6 │           20 │
+ 7. │       7 │           20 │
+ 8. │       8 │           20 │
+ 9. │       9 │           20 │
+10. │      10 │           20 │
+    └─────────┴──────────────┘
+
+=== 3. GROUP BY non-sharding key: top 10 pages by visits ===
+    ┌─page_url──┬─visits─┐
+ 1. │ /page/0   │   2000 │
+ 2. │ /page/1   │   2000 │
+ 3. │ /page/10  │   2000 │
+ 4. │ /page/100 │   2000 │
+ 5. │ /page/101 │   2000 │
+ 6. │ /page/102 │   2000 │
+ 7. │ /page/103 │   2000 │
+ 8. │ /page/104 │   2000 │
+ 9. │ /page/105 │   2000 │
+10. │ /page/106 │   2000 │
+    └───────────┴────────┘
+
+=== 4. JOIN events_distributed with user_dict by user_id ===
+   ┌─segment──┬─events_count─┐
+1. │ new      │        25000 │
+2. │ regular  │        25000 │
+3. │ inactive │        25000 │
+4. │ vip      │        25000 │
+   └──────────┴──────────────┘
+
+=== 4. GLOBAL JOIN example ===
+   ┌─segment──┬─events_count─┐
+1. │ new      │        25000 │
+2. │ regular  │        25000 │
+3. │ inactive │        25000 │
+4. │ vip      │        25000 │
+   └──────────┴──────────────┘
