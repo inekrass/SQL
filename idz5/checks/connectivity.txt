@@ -1,0 +1,12 @@
+1) HTTP API check:
+[{
+"columns":[{"Table":{"type":"string"}},{"Type":{"type":"string"}}],
+"data":[
+
+],
+"total":0,
+"error":"",
+"warning":""
+}]
+
+2) MySQL protocol check:
