@@ -1,0 +1,36 @@
+=== 4.4 Поиск с фильтрацией по атрибутам ===
+
+Запрос:
+SELECT id, title, price, rating
+FROM products
+WHERE MATCH('laptop') AND price BETWEEN 30000 AND 80000 AND rating >= 4.0
+ORDER BY rating DESC
+LIMIT 10;
+
+Результат:
++-------+-----------------------------------------+--------------+----------+
+| id    | title                                   | price        | rating   |
++-------+-----------------------------------------+--------------+----------+
+| 46363 | Samsung blue gaming laptop model 46363  | 79667.609375 | 5.000000 |
+| 46521 | Acer green gaming laptop model 46521    | 44958.371094 | 5.000000 |
+| 46811 | Samsung black gaming laptop model 46811 | 49669.839844 | 5.000000 |
+| 46832 | Huawei blue gaming laptop model 46832   | 34175.710938 | 5.000000 |
+| 78211 | Xiaomi black gaming laptop model 78211  | 56334.890625 | 5.000000 |
+|  3959 | Logitech green gaming laptop model 3959 | 68179.812500 | 5.000000 |
+| 79002 | Logitech blue gaming laptop model 79002 | 57076.988281 | 5.000000 |
+| 80628 | Sony black gaming laptop model 80628    | 30117.250000 | 5.000000 |
+| 80898 | Huawei red gaming laptop model 80898    | 71259.023438 | 5.000000 |
+|  9250 | Samsung blue business laptop model 9250 | 31388.330078 | 5.000000 |
++-------+-----------------------------------------+--------------+----------+
++----------------+------------------------------+
+| Variable_name  | Value                        |
++----------------+------------------------------+
+| total          | 10                           |
+| total_found    | 3467                         |
+| total_relation | eq                           |
+| time           | 0.005                        |
+| keyword[0]     | laptop                       |
+| docs[0]        | 19930                        |
+| hits[0]        | 39860                        |
+| index          | rating:SecondaryIndex (100%) |
++----------------+------------------------------+

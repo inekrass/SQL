@@ -1,0 +1,37 @@
+=== 4.2 Поиск с точной фразой ===
+
+Запрос:
+SELECT id, title, WEIGHT() AS w
+FROM products
+WHERE MATCH('"noise cancelling"')
+LIMIT 10;
+
+Результат:
++-------+------------------------------------------------------+------+
+| id    | title                                                | w    |
++-------+------------------------------------------------------+------+
+| 77004 | Xiaomi blue noise cancelling headphones model 77004  | 4582 |
+| 77020 | Xiaomi green noise cancelling headphones model 77020 | 4582 |
+| 77031 | Lenovo red noise cancelling headphones model 77031   | 4582 |
+| 77040 | Apple black noise cancelling headphones model 77040  | 4582 |
+| 77044 | Asus red noise cancelling headphones model 77044     | 4582 |
+| 77065 | JBL black noise cancelling headphones model 77065    | 4582 |
+| 77081 | Asus red noise cancelling headphones model 77081     | 4582 |
+| 77096 | Huawei blue noise cancelling headphones model 77096  | 4582 |
+| 77111 | Acer green noise cancelling headphones model 77111   | 4582 |
+| 77131 | Lenovo black noise cancelling headphones model 77131 | 4582 |
++-------+------------------------------------------------------+------+
++----------------+--------+
+| Variable_name  | Value  |
++----------------+--------+
+| total          | 10     |
+| total_found    | 19861  |
+| total_relation | eq     |
+| time           | 0.004  |
+| keyword[0]     | cancel |
+| docs[0]        | 19861  |
+| hits[0]        | 29838  |
+| keyword[1]     | nois   |
+| docs[1]        | 19861  |
+| hits[1]        | 29838  |
++----------------+--------+

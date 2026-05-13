@@ -1,0 +1,37 @@
+=== 4.3 Поиск с оператором proximity ===
+
+Запрос:
+SELECT id, title, WEIGHT() AS w
+FROM products
+WHERE MATCH('"portable speaker"~3')
+LIMIT 10;
+
+Результат:
++-------+----------------------------------------------+------+
+| id    | title                                        | w    |
++-------+----------------------------------------------+------+
+| 77023 | Lenovo blue portable speaker model 77023     | 3580 |
+| 77052 | JBL blue portable speaker model 77052        | 3580 |
+| 77053 | Samsung black portable speaker model 77053   | 3580 |
+| 77071 | Logitech blue portable speaker model 77071   | 3580 |
+| 77076 | JBL black portable speaker model 77076       | 3580 |
+| 77090 | JBL blue portable speaker model 77090        | 3580 |
+| 77113 | Asus silver portable speaker model 77113     | 3580 |
+| 77118 | Logitech green portable speaker model 77118  | 3580 |
+| 77125 | Logitech silver portable speaker model 77125 | 3580 |
+| 77128 | Huawei red portable speaker model 77128      | 3580 |
++-------+----------------------------------------------+------+
++----------------+---------+
+| Variable_name  | Value   |
++----------------+---------+
+| total          | 10      |
+| total_found    | 10058   |
+| total_relation | eq      |
+| time           | 0.003   |
+| keyword[0]     | portabl |
+| docs[0]        | 10058   |
+| hits[0]        | 20116   |
+| keyword[1]     | speaker |
+| docs[1]        | 10058   |
+| hits[1]        | 20116   |
++----------------+---------+

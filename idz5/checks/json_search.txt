@@ -1,0 +1,34 @@
+=== 4.5 Поиск по JSON-атрибуту ===
+
+Запрос:
+SELECT id, title, tags
+FROM products
+WHERE MATCH('phone') AND tags.color = 'black'
+LIMIT 10;
+
+Результат:
++-------+---------------------------------------+-----------------------------------------------------------------+
+| id    | title                                 | tags                                                            |
++-------+---------------------------------------+-----------------------------------------------------------------+
+| 77025 | Apple black smart phone model 77025   | {"color":"black","source":"python_generator","condition":"new"} |
+| 77042 | Samsung black smart phone model 77042 | {"color":"black","source":"python_generator","condition":"new"} |
+| 46117 | Sony black smart phone model 46117    | {"color":"black","source":"python_generator","condition":"new"} |
+| 46159 | Lenovo black smart phone model 46159  | {"color":"black","source":"python_generator","condition":"new"} |
+| 46177 | Huawei black smart phone model 46177  | {"color":"black","source":"python_generator","condition":"new"} |
+| 46183 | JBL black smart phone model 46183     | {"color":"black","source":"python_generator","condition":"new"} |
+| 46207 | Samsung black smart phone model 46207 | {"color":"black","source":"python_generator","condition":"new"} |
+| 46245 | Acer black smart phone model 46245    | {"color":"black","source":"python_generator","condition":"new"} |
+| 77254 | Xiaomi black smart phone model 77254  | {"color":"black","source":"python_generator","condition":"new"} |
+| 46267 | Lenovo black smart phone model 46267  | {"color":"black","source":"python_generator","condition":"new"} |
++-------+---------------------------------------+-----------------------------------------------------------------+
++----------------+-------+
+| Variable_name  | Value |
++----------------+-------+
+| total          | 10    |
+| total_found    | 3288  |
+| total_relation | eq    |
+| time           | 0.013 |
+| keyword[0]     | phone |
+| docs[0]        | 20076 |
+| hits[0]        | 30248 |
++----------------+-------+
