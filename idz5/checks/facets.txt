@@ -1,0 +1,113 @@
+=== Part 5. Фасетный поиск и агрегации ===
+
+=== 5.1 Агрегирование по категориям ===
+
+Запрос:
+SELECT category, COUNT(*) AS cnt, AVG(price) AS avg_price
+FROM products
+WHERE MATCH('gaming')
+GROUP BY category
+ORDER BY cnt DESC;
+
+Результат:
++------------+-------+----------------+
+| category   | cnt   | avg_price      |
++------------+-------+----------------+
+| phones     | 22103 | 75657.78564433 |
+| laptops    | 21930 | 75750.62509689 |
+| headphones | 21897 | 75374.64796242 |
+| speakers   | 12081 | 75459.25868282 |
+| gaming     | 12054 | 76122.54591732 |
+| monitors   |  2013 | 75464.35004926 |
+| tablets    |  2011 | 75372.81020938 |
+| cameras    |  1982 | 74292.39007861 |
+| keyboards  |  1966 | 75728.80907837 |
+| mice       |  1963 | 74531.80460025 |
++------------+-------+----------------+
++----------------+--------+
+| Variable_name  | Value  |
++----------------+--------+
+| total          | 10     |
+| total_found    | 10     |
+| total_relation | eq     |
+| time           | 0.008  |
+| keyword[0]     | game   |
+| docs[0]        | 100000 |
+| hits[0]        | 149740 |
++----------------+--------+
+
+
+=== 5.2 Facet поиск по категориямd ===
+
+Запрос:
+SELECT id, title, price
+FROM products
+WHERE MATCH('gaming')
+FACET category ORDER BY COUNT(*) DESC
+FACET brand ORDER BY COUNT(*) DESC;
+
+Результат:
++-------+-------------------------------------------+---------------+
+| id    | title                                     | price         |
++-------+-------------------------------------------+---------------+
+| 77003 | Apple white gaming laptop model 77003     |  86886.460938 |
+| 77024 | Huawei blue gaming laptop model 77024     | 100132.773438 |
+| 77027 | Apple green gaming mouse model 77027      |  27925.310547 |
+| 77036 | JBL silver gaming laptop model 77036      |  22257.519531 |
+| 77039 | Sony silver gaming laptop model 77039     | 123471.750000 |
+| 77041 | Samsung blue gaming mouse model 77041     |  78815.601562 |
+| 77045 | Asus red gaming mouse model 77045         |  35390.179688 |
+| 77046 | Logitech silver gaming laptop model 77046 |  19207.179688 |
+| 77050 | Xiaomi blue gaming mouse model 77050      | 105323.421875 |
+| 77059 | Apple blue gaming laptop model 77059      |  38656.218750 |
+| 77067 | Logitech blue gaming laptop model 77067   |  73762.031250 |
+| 77080 | JBL white gaming mouse model 77080        | 109910.726562 |
+| 77083 | Xiaomi silver gaming mouse model 77083    | 128320.843750 |
+| 77087 | Asus white gaming mouse model 77087       |  28134.779297 |
+| 77088 | Apple green gaming mouse model 77088      |  64650.968750 |
+| 77091 | Huawei red gaming laptop model 77091      |  22133.880859 |
+| 77092 | Lenovo red gaming mouse model 77092       |  47549.558594 |
+| 77093 | Lenovo silver gaming laptop model 77093   |  85523.460938 |
+| 77099 | Acer red gaming mouse model 77099         | 147587.093750 |
+| 77107 | Apple white gaming laptop model 77107     |   5744.890137 |
++-------+-------------------------------------------+---------------+
++------------+----------+
+| category   | count(*) |
++------------+----------+
+| phones     |    22103 |
+| laptops    |    21930 |
+| headphones |    21897 |
+| speakers   |    12081 |
+| gaming     |    12054 |
+| monitors   |     2013 |
+| tablets    |     2011 |
+| cameras    |     1982 |
+| keyboards  |     1966 |
+| mice       |     1963 |
++------------+----------+
++----------+----------+
+| brand    | count(*) |
++----------+----------+
+| Huawei   |    10118 |
+| Xiaomi   |    10083 |
+| Asus     |    10070 |
+| Lenovo   |    10034 |
+| Apple    |    10022 |
+| Sony     |    10008 |
+| Logitech |     9973 |
+| Samsung  |     9932 |
+| Acer     |     9908 |
+| JBL      |     9852 |
++----------+----------+
++----------------+--------+
+| Variable_name  | Value  |
++----------------+--------+
+| total          | 20     |
+| total_found    | 100000 |
+| total_relation | eq     |
+| time           | 0.009  |
+| multiplier     | 3      |
+| keyword[0]     | game   |
+| docs[0]        | 100000 |
+| hits[0]        | 149740 |
++----------------+--------+
