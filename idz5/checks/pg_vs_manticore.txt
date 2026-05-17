@@ -1,0 +1,53 @@
+=== Part 6. ManticoreSearch vs PostgreSQL full-text search ===
+
+=== 1) PostgreSQL ===
+
+                                                                  QUERY PLAN                                                                   
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1373.38..1373.40 rows=10 width=45) (actual time=38.965..38.967 rows=10 loops=1)
+   ->  Sort  (cost=1373.38..1374.36 rows=392 width=45) (actual time=38.964..38.965 rows=10 loops=1)
+         Sort Key: (ts_rank(pg_products.tsv, '''wireless'' & ''bluetooth'' & ''headphon'''::tsquery)) DESC
+         Sort Method: top-N heapsort  Memory: 26kB
+         ->  Bitmap Heap Scan on pg_products  (cost=45.07..1364.91 rows=392 width=45) (actual time=2.175..38.006 rows=10013 loops=1)
+               Recheck Cond: (tsv @@ '''wireless'' & ''bluetooth'' & ''headphon'''::tsquery)
+               Heap Blocks: exact=6562
+               ->  Bitmap Index Scan on idx_pg_products_tsv  (cost=0.00..44.97 rows=392 width=0) (actual time=1.578..1.579 rows=10013 loops=1)
+                     Index Cond: (tsv @@ '''wireless'' & ''bluetooth'' & ''headphon'''::tsquery)
+ Planning Time: 0.313 ms
+ Execution Time: 39.016 ms
+(11 rows)
+
+
+=== 2) ManticoreSearch ===
+
++-------+---------------------------------------------------------+------+
+| id    | title                                                   | w    |
++-------+---------------------------------------------------------+------+
+| 77005 | Lenovo silver wireless bluetooth headphones model 77005 | 6559 |
+| 77007 | Lenovo blue wireless bluetooth headphones model 77007   | 6559 |
+| 77014 | Acer red wireless bluetooth headphones model 77014      | 6559 |
+| 77021 | Lenovo blue wireless bluetooth headphones model 77021   | 6559 |
+| 77030 | Apple green wireless bluetooth headphones model 77030   | 6559 |
+| 77047 | Samsung red wireless bluetooth headphones model 77047   | 6559 |
+| 77051 | Apple red wireless bluetooth headphones model 77051     | 6559 |
+| 77062 | Lenovo green wireless bluetooth headphones model 77062  | 6559 |
+| 77077 | Huawei silver wireless bluetooth headphones model 77077 | 6559 |
+| 77103 | Huawei red wireless bluetooth headphones model 77103    | 6559 |
++-------+---------------------------------------------------------+------+
++----------------+-----------+
+| Variable_name  | Value     |
++----------------+-----------+
+| total          | 10        |
+| total_found    | 9884      |
+| total_relation | eq        |
+| time           | 0.011     |
+| keyword[0]     | bluetooth |
+| docs[0]        | 19942     |
+| hits[0]        | 29826     |
+| keyword[1]     | headphon  |
+| docs[1]        | 19861     |
+| hits[1]        | 39722     |
+| keyword[2]     | wireless  |
+| docs[2]        | 9884      |
+| hits[2]        | 19768     |
++----------------+-----------+

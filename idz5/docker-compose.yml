@@ -10,13 +10,27 @@ services:
     volumes:
       - manticore_data:/var/lib/manticore
     ulimits:
-        nproc: 65535
-        nofile:
-            soft: 65535
-            hard: 65535
-        memlock:
-            soft: -1
-            hard: -1
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+      memlock:
+        soft: -1
+        hard: -1
+
+  postgres:
+    image: postgres:16
+    container_name: idz5_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: idz5
+      POSTGRES_USER: idz5
+      POSTGRES_PASSWORD: idz5
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   manticore_data:
+  postgres_data:
