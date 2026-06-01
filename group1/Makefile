@@ -1,6 +1,6 @@
 COMPOSE := docker compose
 
-.PHONY: up down status test config logs
+.PHONY: up down status test config logs create-tables generate-data check-cluster
 
 up:
 	$(COMPOSE) up -d
@@ -14,6 +14,15 @@ status:
 test:
 	$(COMPOSE) config --quiet
 	$(COMPOSE) ps
+
+create-tables:
+	sh scripts/create_tables.sh
+
+generate-data:
+	sh scripts/generate_data.sh
+
+check-cluster:
+	sh scripts/check_cluster.sh
 
 config:
 	$(COMPOSE) config

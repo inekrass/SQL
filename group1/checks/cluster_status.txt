@@ -1,0 +1,14 @@
+Command:
+make check-cluster
+
+Cluster production:
+production	1	1	ch-s1-r1
+production	1	2	ch-s1-r2
+production	2	1	ch-s2-r1
+production	2	2	ch-s2-r2
+
+Replicas:
+ch-s1-r1	telemetry	metrics_local	ch-s1-r1	1	0	0	0
+ch-s1-r2	telemetry	metrics_local	ch-s1-r2	1	0	0	0
+ch-s2-r1	telemetry	metrics_local	ch-s2-r1	1	0	0	0
+ch-s2-r2	telemetry	metrics_local	ch-s2-r2	1	0	0	0

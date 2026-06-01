@@ -3,10 +3,6 @@ x-clickhouse-common: &clickhouse-common
   restart: unless-stopped
   networks:
     - clickhouse-net
-  environment:
-    CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
-    CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
-    CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
   ulimits:
     nofile:
       soft: 262144
@@ -33,9 +29,7 @@ services:
     <<: *clickhouse-common
     hostname: ch-s1-r1
     environment:
-      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
-      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
-      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
+      CLICKHOUSE_SKIP_USER_SETUP: "1"
       CLICKHOUSE_SHARD: "01"
       CLICKHOUSE_REPLICA: "ch-s1-r1"
     volumes:
@@ -48,9 +42,7 @@ services:
     <<: *clickhouse-common
     hostname: ch-s1-r2
     environment:
-      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
-      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
-      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
+      CLICKHOUSE_SKIP_USER_SETUP: "1"
       CLICKHOUSE_SHARD: "01"
       CLICKHOUSE_REPLICA: "ch-s1-r2"
     volumes:
@@ -63,9 +55,7 @@ services:
     <<: *clickhouse-common
     hostname: ch-s2-r1
     environment:
-      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
-      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
-      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
+      CLICKHOUSE_SKIP_USER_SETUP: "1"
       CLICKHOUSE_SHARD: "02"
       CLICKHOUSE_REPLICA: "ch-s2-r1"
     volumes:
@@ -78,9 +68,7 @@ services:
     <<: *clickhouse-common
     hostname: ch-s2-r2
     environment:
-      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
-      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
-      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
+      CLICKHOUSE_SKIP_USER_SETUP: "1"
       CLICKHOUSE_SHARD: "02"
       CLICKHOUSE_REPLICA: "ch-s2-r2"
     volumes:

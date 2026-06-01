@@ -1,0 +1,16 @@
+Command:
+make generate-data
+make check-cluster
+
+Total rows through telemetry.metrics_distributed:
+5000000
+
+Rows by shard:
+1	2500145
+2	2499855
+
+Rows by local replica:
+ch-s1-r1	2500145
+ch-s1-r2	2500145
+ch-s2-r1	2499855
+ch-s2-r2	2499855

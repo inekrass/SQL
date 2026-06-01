@@ -1,0 +1,10 @@
+Command:
+make check-cluster
+
+Query through telemetry.metrics_distributed:
+cpu_usage	833334	50.03
+disk_read	833333	50.02
+disk_write	833333	49.99
+memory_usage	833334	50
+network_in	833333	49.98
+network_out	833333	49.99
