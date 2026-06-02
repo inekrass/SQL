@@ -1,0 +1,10 @@
+JSON access-log examples:
+
+{"time":"2026-06-02T20:19:14+00:00","remote_addr":"172.22.0.1","request":"POST / HTTP/1.1","status":200,"body_bytes_sent":19,"request_time":0.008,"upstream_addr":"172.22.0.8:8123","upstream_status":"200","upstream_response_time":"0.008"}
+{"time":"2026-06-02T20:19:14+00:00","remote_addr":"172.22.0.1","request":"POST / HTTP/1.1","status":200,"body_bytes_sent":19,"request_time":0.007,"upstream_addr":"172.22.0.10:8123","upstream_status":"200","upstream_response_time":"0.007"}
+{"time":"2026-06-02T20:19:14+00:00","remote_addr":"172.22.0.1","request":"POST / HTTP/1.1","status":200,"body_bytes_sent":19,"request_time":0.004,"upstream_addr":"172.22.0.7:8123","upstream_status":"200","upstream_response_time":"0.003"}
+
+Failover log example:
+
+{"time":"2026-06-02T20:19:55+00:00","remote_addr":"172.22.0.1","request":"POST / HTTP/1.1","status":200,"body_bytes_sent":19,"request_time":2.015,"upstream_addr":"172.22.0.8:8123, 172.22.0.10:8123","upstream_status":"504, 200","upstream_response_time":"2.003, 0.011"}
+

@@ -1,0 +1,27 @@
+Commands:
+make check-nginx
+docker compose stop ch-s1-r2
+make check-nginx
+docker compose start ch-s1-r2
+make nginx-logs
+
+Round-robin before stopping ch-s1-r2:
+ch-s1-r2
+ch-s2-r1
+ch-s2-r2
+ch-s1-r1
+ch-s1-r2
+ch-s2-r1
+ch-s2-r2
+ch-s1-r1
+
+Requests after stopping ch-s1-r2:
+ch-s2-r1
+ch-s2-r2
+ch-s2-r1
+ch-s1-r1
+ch-s2-r2
+ch-s2-r1
+ch-s1-r1
+ch-s2-r2
+
