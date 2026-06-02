@@ -1,6 +1,6 @@
 COMPOSE := docker compose
 
-.PHONY: up down status test config logs create-tables generate-data check-cluster check-nginx nginx-logs
+.PHONY: up down status test config logs create-tables generate-data check-cluster check-nginx nginx-logs check-monitoring
 
 up:
 	$(COMPOSE) up -d
@@ -29,6 +29,9 @@ check-nginx:
 
 nginx-logs:
 	$(COMPOSE) logs --tail=100 nginx
+
+check-monitoring:
+	sh scripts/check_monitoring.sh
 
 config:
 	$(COMPOSE) config

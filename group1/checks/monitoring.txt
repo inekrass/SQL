@@ -1,0 +1,28 @@
+Command:
+make check-monitoring
+
+Prometheus ClickHouse targets:
+ch-s1-r1:9363 up=1
+ch-s1-r2:9363 up=1
+ch-s2-r1:9363 up=1
+ch-s2-r2:9363 up=1
+
+Checked PromQL metrics:
+ClickHouseAsyncMetrics_TotalRowsOfMergeTreeTables
+rate(ClickHouseProfileEvents_Query[5m])
+ClickHouseMetrics_ReadonlyReplica
+ClickHouseAsyncMetrics_ReplicasMaxQueueSize
+ClickHouseMetrics_MemoryTracking
+
+Replication status from Prometheus:
+ClickHouseMetrics_ReadonlyReplica = 0 on all nodes
+ClickHouseAsyncMetrics_ReplicasMaxQueueSize = 0 on all nodes
+
+Grafana provisioning:
+Datasource Prometheus is provisioned from monitoring/provisioning/datasources/datasources.yml.
+Dashboard ClickHouse HA Cluster is provisioned from monitoring/dashboards/clickhouse.json.
+
+Grafana API result:
+uid=clickhouse-ha-cluster
+title=ClickHouse HA Cluster
+folder=ClickHouse
