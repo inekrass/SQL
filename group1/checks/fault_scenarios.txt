@@ -1,0 +1,106 @@
+Part 5. Fault injection results
+
+Baseline:
+Command:
+docker compose ps
+Result:
+all 10 services are Up
+
+Command:
+docker compose exec -T ch-s1-r1 clickhouse-client --query "SELECT count() FROM telemetry.metrics_distributed"
+Result:
+10000000
+
+Scenario 1. Replica loss
+Action:
+docker compose stop ch-s1-r2
+
+Checks:
+sh scripts/check_nginx.sh
+Result:
+ch-s2-r1
+
+docker compose exec -T ch-s1-r1 clickhouse-client --query "SELECT count() FROM telemetry.metrics_distributed"
+Result:
+10000000
+
+Expected result:
+Queries continue to work. Nginx uses available ClickHouse nodes. Distributed SELECT can still read shard 1 through the remaining replica.
+
+Restore:
+docker compose start ch-s1-r2
+
+Scenario 2. Shard loss
+Action:
+docker compose stop ch-s2-r1 ch-s2-r2
+
+Checks:
+docker compose exec -T ch-s1-r1 clickhouse-client --query "SELECT hostName()"
+Result:
+ch-s1-r1
+
+docker compose exec -T ch-s1-r1 clickhouse-client --connect_timeout 2 --receive_timeout 5 --send_timeout 5 --query "SELECT count() FROM telemetry.metrics_distributed"
+Result:
+Code: 279. DB::Exception: All connection tries failed.
+Code: 209. DB::NetException: Timeout: connect timed out: ch-s2-r1/ch-s2-r2:9000.
+
+Expected result:
+Shard 1 is available, but Distributed SELECT fails because all replicas of shard 2 are unavailable.
+
+Restore:
+docker compose start ch-s2-r1 ch-s2-r2
+
+Scenario 3. One Keeper loss
+Action:
+docker compose stop keeper-1
+
+Checks:
+docker compose exec -T ch-s1-r1 clickhouse-client --query "INSERT INTO telemetry.metrics_distributed SELECT now64(3), 'fault-host', 'keeper_one_down', toFloat64(number) FROM numbers(10)"
+Result:
+INSERT completed successfully.
+
+docker compose exec -T ch-s1-r1 clickhouse-client --query "SELECT count() FROM telemetry.metrics_distributed WHERE metric_name='keeper_one_down'"
+Result:
+10
+
+Expected result:
+Quorum is alive because keeper-2 and keeper-3 are running. INSERT works.
+
+Restore:
+docker compose start keeper-1
+
+Scenario 4. Keeper quorum loss
+Action:
+docker compose stop keeper-1 keeper-2
+
+Checks:
+docker compose exec -T ch-s1-r1 clickhouse-client --receive_timeout 5 --send_timeout 5 --query "SELECT count() FROM telemetry.metrics_distributed"
+Result:
+10000010
+
+docker compose exec -T ch-s1-r1 clickhouse-client --receive_timeout 5 --send_timeout 5 --query "INSERT INTO telemetry.metrics_distributed SELECT now64(3), 'fault-host', 'keeper_quorum_lost', toFloat64(number) FROM numbers(1)"
+Result:
+INSERT did not complete while quorum was unavailable.
+After restoring keeper-1 and keeper-2, the waiting INSERT returned:
+Code: 242. DB::Exception: Table is in readonly mode. (TABLE_IS_READ_ONLY)
+
+Expected result:
+SELECT works on existing data. INSERT is impossible without Keeper quorum.
+
+Restore:
+docker compose start keeper-1 keeper-2
+
+Final recovery check:
+Command:
+docker compose exec -T ch-s1-r1 clickhouse-client --query "SELECT hostName(), replica_name, is_readonly, absolute_delay, queue_size FROM clusterAllReplicas('production', system, replicas) WHERE database='telemetry' AND table='metrics_local' ORDER BY hostName()"
+
+Result:
+ch-s1-r1	ch-s1-r1	0	0	0
+ch-s1-r2	ch-s1-r2	0	0	0
+ch-s2-r1	ch-s2-r1	0	0	0
+ch-s2-r2	ch-s2-r2	0	0	0
+
+Command:
+docker compose ps
+Result:
+all 10 services are Up

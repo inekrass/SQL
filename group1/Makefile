@@ -1,6 +1,6 @@
 COMPOSE := docker compose
 
-.PHONY: up down status test config logs create-tables generate-data check-cluster check-nginx nginx-logs check-monitoring
+.PHONY: up down status test config logs create-tables generate-data check-cluster check-nginx nginx-logs check-monitoring fault-status
 
 up:
 	$(COMPOSE) up -d
@@ -32,6 +32,9 @@ nginx-logs:
 
 check-monitoring:
 	sh scripts/check_monitoring.sh
+
+fault-status:
+	sh scripts/fault_injection.sh status
 
 config:
 	$(COMPOSE) config
