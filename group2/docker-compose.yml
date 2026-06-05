@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: group2_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-shop}
+      POSTGRES_USER: ${POSTGRES_USER:-shop_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shop_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./sql/pg/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./sql/pg:/sql/pg:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-shop_user} -d ${POSTGRES_DB:-shop}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pg_data:

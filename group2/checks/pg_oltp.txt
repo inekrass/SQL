@@ -1,0 +1,40 @@
+PostgreSQL OLTP checks
+======================
+
+OLTP-операции
+----------------
+
+Проверили:
+- создание заказа в транзакции;
+- добавление двух позиций заказа;
+- обновление статуса заказа;
+- чтение заказа с JOIN-ами.
+
+Результат создания заказа:
+
+BEGIN
+ created_order_id | status
+------------------+--------
+           500001 | new
+(1 row)
+
+INSERT 0 1
+INSERT 0 2
+COMMIT
+
+Результат обновления статуса:
+
+ updated_order_id | status
+------------------+--------
+           500001 | paid
+(1 row)
+
+UPDATE 1
+
+Результат чтения заказа через JOIN:
+
+ order_id | status | customer_id |  customer_name   | product_id | product_name | category_name | quantity | unit_price | line_total
+----------+--------+-------------+------------------+------------+--------------+---------------+----------+------------+------------
+   500001 | paid   |           1 | Customer1 Testov |          1 | Product 1    | Category 2    |        2 |    4324.68 |    8649.36
+   500001 | paid   |           1 | Customer1 Testov |          2 | Product 2    | Category 3    |        1 |   63533.79 |   63533.79
+(2 rows)
