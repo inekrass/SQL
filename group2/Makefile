@@ -31,6 +31,10 @@ manticore-etl:
 manticore-check:
 	docker compose exec -T manticore mysql -h0 -P9306 < sql/manticore/02_search_queries.sql
 
+# Запустить end-to-end демо: PostgreSQL -> ClickHouse -> ManticoreSearch.
+demo:
+	python3 scripts/demo_scenario.py
+
 # Остановить и удалить контейнеры проекта.
 down:
 	docker compose down

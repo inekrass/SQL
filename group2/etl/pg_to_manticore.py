@@ -77,6 +77,11 @@ def insert_batch(cursor, rows):
 
 
 def main():
+    total_rows = run_etl()
+    print(f"Manticore ETL finished, total reviews loaded: {total_rows}")
+
+
+def run_etl():
     total_rows = 0
 
     with get_pg_connection() as pg_connection:
@@ -97,7 +102,7 @@ def main():
                         total_rows += len(rows)
                         print(f"loaded reviews: {total_rows}")
 
-    print(f"Manticore ETL finished, total reviews loaded: {total_rows}")
+    return total_rows
 
 
 if __name__ == "__main__":

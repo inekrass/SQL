@@ -67,6 +67,11 @@ def normalize_row(row):
 
 
 def main():
+    total_rows = run_etl()
+    print(f"ETL finished, total rows loaded: {total_rows}")
+
+
+def run_etl():
     client = get_ch_client()
     client.command("TRUNCATE TABLE analytics.orders_analytics")
 
@@ -99,7 +104,7 @@ def main():
                 total_rows += len(batch)
                 print(f"loaded rows: {total_rows}")
 
-    print(f"ETL finished, total rows loaded: {total_rows}")
+    return total_rows
 
 
 if __name__ == "__main__":

@@ -1,0 +1,82 @@
+End-to-end demo scenario
+========================
+
+Команда:
+POSTGRES_PORT=55432 python3 scripts/demo_scenario.py
+
+Результат:
+
+1. Create order in PostgreSQL
+created order_id: 500002
+
+2. Run ETL PostgreSQL -> ClickHouse
+loaded rows: 50000
+loaded rows: 100000
+loaded rows: 150000
+loaded rows: 200000
+loaded rows: 250000
+loaded rows: 300000
+loaded rows: 350000
+loaded rows: 400000
+loaded rows: 450000
+loaded rows: 500000
+loaded rows: 550000
+loaded rows: 600000
+loaded rows: 650000
+loaded rows: 700000
+loaded rows: 750000
+loaded rows: 800000
+loaded rows: 850000
+loaded rows: 900000
+loaded rows: 950000
+loaded rows: 1000000
+loaded rows: 1000004
+ClickHouse rows loaded: 1000004
+
+3. Run analytics query in ClickHouse: top-5 categories by revenue
+Category 1: 15016694091.25
+Category 11: 15013268076.75
+Category 6: 14979888465.65
+Category 16: 14963920396.20
+Category 10: 12059496105.44
+
+4. Add review in PostgreSQL
+created review_id: 200002
+
+5. Sync reviews PostgreSQL -> ManticoreSearch
+loaded reviews: 10000
+loaded reviews: 20000
+loaded reviews: 30000
+loaded reviews: 40000
+loaded reviews: 50000
+loaded reviews: 60000
+loaded reviews: 70000
+loaded reviews: 80000
+loaded reviews: 90000
+loaded reviews: 100000
+loaded reviews: 110000
+loaded reviews: 120000
+loaded reviews: 130000
+loaded reviews: 140000
+loaded reviews: 150000
+loaded reviews: 160000
+loaded reviews: 170000
+loaded reviews: 180000
+loaded reviews: 190000
+loaded reviews: 200000
+loaded reviews: 200002
+Manticore reviews loaded: 200002
+
+6. Full-text search in ManticoreSearch
++--------+------------+-------------+--------+-----------------+
+| id     | product_id | customer_id | rating | title           |
++--------+------------+-------------+--------+-----------------+
+| 200001 |         42 |           1 |      5 | Great product   |
+|  20002 |          3 |       20003 |      3 | Expected better |
+|  10002 |          3 |       10003 |      3 | Expected better |
+| 200002 |         42 |           1 |      5 | Demo review     |
+|  40002 |          3 |       40003 |      3 | Expected better |
++--------+------------+-------------+--------+-----------------+
+
+Вывод:
+Demo-сценарий прошел полностью. PostgreSQL создал заказ и отзыв, ClickHouse получил обновленные данные для аналитики, ManticoreSearch получил обновленный индекс отзывов и выполнил полнотекстовый поиск.
