@@ -1,0 +1,132 @@
+PostgreSQL -> ClickHouse ETL checks
+===================================
+
+1. Таблица ClickHouse создана
+-----------------------------
+
+Команда:
+docker compose exec clickhouse clickhouse-client \
+  --user analytics_user \
+  --password analytics_password \
+  --database analytics \
+  --query "DESCRIBE TABLE analytics.orders_analytics"
+
+Результат:
+order_date      Date
+order_id        UInt64
+customer_name   String
+region          LowCardinality(String)
+product_name    String
+category        LowCardinality(String)
+quantity        UInt32
+price           Decimal(12, 2)
+line_total      Decimal(12, 2)
+order_status    LowCardinality(String)
+
+Вывод: таблица плоская и денормализованная, как нужно для аналитики.
+
+
+2. Источник PostgreSQL
+----------------------
+
+Команда:
+docker compose exec -T postgres psql -U shop_user -d shop -c "SELECT count(*) AS source_rows FROM order_items;"
+
+Результат:
+ source_rows
+-------------
+     1000002
+(1 row)
+
+
+3. Запуск ETL
+-------------
+
+Команда:
+POSTGRES_PORT=55432 python3 etl/pg_to_ch.py
+
+Результат:
+loaded rows: 50000
+loaded rows: 100000
+loaded rows: 150000
+loaded rows: 200000
+loaded rows: 250000
+loaded rows: 300000
+loaded rows: 350000
+loaded rows: 400000
+loaded rows: 450000
+loaded rows: 500000
+loaded rows: 550000
+loaded rows: 600000
+loaded rows: 650000
+loaded rows: 700000
+loaded rows: 750000
+loaded rows: 800000
+loaded rows: 850000
+loaded rows: 900000
+loaded rows: 950000
+loaded rows: 1000000
+loaded rows: 1000002
+ETL finished, total rows loaded: 1000002
+
+
+4. Данные в ClickHouse
+----------------------
+
+Команда:
+docker compose exec clickhouse clickhouse-client \
+  --user analytics_user \
+  --password analytics_password \
+  --database analytics \
+  --query "SELECT count(*) AS rows_count FROM analytics.orders_analytics"
+
+Результат:
+1000002
+
+Вывод: количество строк в ClickHouse совпадает с количеством строк-источников в PostgreSQL.
+
+
+5. Аналитический запрос: топ-5 категорий по выручке
+--------------------------------------------------
+
+Команда:
+SELECT
+    category,
+    sum(line_total) AS revenue
+FROM analytics.orders_analytics
+GROUP BY category
+ORDER BY revenue DESC
+LIMIT 5;
+
+Результат:
+Category 1	15016694091.25
+Category 11	15013268076.75
+Category 6	14979888465.65
+Category 16	14963920396.20
+Category 10	12059496105.44
+
+
+6. Аналитический запрос: дневная динамика заказов
+------------------------------------------------
+
+Команда:
+SELECT
+    order_date,
+    countDistinct(order_id) AS orders_count,
+    sum(line_total) AS revenue
+FROM analytics.orders_analytics
+GROUP BY order_date
+ORDER BY order_date
+LIMIT 10;
+
+Результат:
+2025-06-06	1369	242493522.99
+2025-06-07	1369	485258038.05
+2025-06-08	1369	729050412.61
+2025-06-09	1369	572097698.74
+2025-06-10	1369	416013112.77
+2025-06-11	1369	247846145.74
+2025-06-12	1369	480886674.38
+2025-06-13	1369	747459917.68
+2025-06-14	1369	575948530.84
+2025-06-15	1369	419529307.31
