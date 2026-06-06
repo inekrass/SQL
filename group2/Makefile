@@ -35,6 +35,14 @@ manticore-check:
 demo:
 	python3 scripts/demo_scenario.py
 
+# Поднять мониторинг: exporter, Prometheus и Grafana.
+monitoring-up:
+	docker compose up -d metrics-exporter prometheus grafana
+
+# Проверить, что Prometheus видит exporter.
+monitoring-check:
+	docker compose exec prometheus wget -qO- http://metrics-exporter:9180/metrics
+
 # Остановить и удалить контейнеры проекта.
 down:
 	docker compose down

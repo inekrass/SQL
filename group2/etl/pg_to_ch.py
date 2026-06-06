@@ -1,5 +1,8 @@
 import os
 from decimal import Decimal
+from datetime import datetime, timezone
+import json
+from pathlib import Path
 
 import clickhouse_connect
 import psycopg2
@@ -9,6 +12,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BATCH_SIZE = int(os.getenv("ETL_BATCH_SIZE", "50000"))
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PIPELINE_STATE_PATH = PROJECT_ROOT / "monitoring" / "pipeline_state.json"
 
 PG_QUERY = """
 SELECT
@@ -104,7 +109,25 @@ def run_etl():
                 total_rows += len(batch)
                 print(f"loaded rows: {total_rows}")
 
+    update_pipeline_state("clickhouse", total_rows)
     return total_rows
+
+
+def update_pipeline_state(target, rows_count):
+    PIPELINE_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    if PIPELINE_STATE_PATH.exists():
+        with PIPELINE_STATE_PATH.open("r", encoding="utf-8") as state_file:
+            state = json.load(state_file)
+    else:
+        state = {}
+
+    state[target] = {
+        "last_sync_at": datetime.now(timezone.utc).isoformat(),
+        "processed_records": rows_count,
+    }
+
+    with PIPELINE_STATE_PATH.open("w", encoding="utf-8") as state_file:
+        json.dump(state, state_file, indent=2)
 
 
 if __name__ == "__main__":

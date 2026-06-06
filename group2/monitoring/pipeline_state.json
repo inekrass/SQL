@@ -1,0 +1,10 @@
+{
+  "clickhouse": {
+    "last_sync_at": "2026-06-06T20:14:47.522379+00:00",
+    "processed_records": 1000004
+  },
+  "manticore": {
+    "last_sync_at": "2026-06-06T20:16:42.416805+00:00",
+    "processed_records": 200002
+  }
+}

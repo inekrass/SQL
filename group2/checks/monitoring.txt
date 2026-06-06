@@ -1,0 +1,83 @@
+Grafana monitoring checks
+=========================
+
+1. Сервисы мониторинга запущены
+-------------------------------
+
+Команда:
+POSTGRES_PORT=55432 docker compose up -d metrics-exporter prometheus grafana
+
+Проверка:
+docker compose ps
+
+Результат:
+group2_metrics_exporter   python:3.11-slim        Up   0.0.0.0:9180->9180/tcp
+group2_prometheus         prom/prometheus:v2.55.1 Up   0.0.0.0:9090->9090/tcp
+group2_grafana            grafana/grafana:11.3.1  Up   0.0.0.0:3000->3000/tcp
+
+
+2. Metrics exporter отдает метрики
+----------------------------------
+
+Команда:
+docker compose exec metrics-exporter python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:9180/metrics').read().decode()[:3000])"
+
+Результат:
+pg_active_connections 7
+pg_transactions_total 8765
+pg_table_size_bytes{table="reviews"} 33234944
+pg_table_size_bytes{table="order_items"} 132800512
+pg_table_size_bytes{table="orders"} 59686912
+pg_table_size_bytes{table="products"} 958464
+pg_table_size_bytes{table="categories"} 49152
+pg_table_size_bytes{table="customers"} 10600448
+pg_exporter_up 1
+clickhouse_orders_analytics_rows 1000004
+clickhouse_queries_total 170
+clickhouse_replication_status{status="single_node_no_replication"} 1
+clickhouse_exporter_up 1
+manticore_reviews_documents 200002
+manticore_last_search_seconds 0.004419
+manticore_exporter_up 1
+pipeline_state_file_exists 1
+pipeline_last_sync_timestamp_seconds{target="clickhouse"} 1780776887.522379
+pipeline_processed_records{target="clickhouse"} 1000004
+pipeline_last_sync_timestamp_seconds{target="manticore"} 1780777002.416805
+pipeline_processed_records{target="manticore"} 200002
+
+
+3. Prometheus видит exporter
+----------------------------
+
+Команда:
+docker compose exec prometheus wget -qO- 'http://localhost:9090/api/v1/targets?state=active'
+
+Результат:
+target: metrics-exporter:9180
+job: pipeline_metrics
+health: up
+lastError: ""
+
+4. Что показывает dashboard
+---------------------------
+
+PostgreSQL:
+- активные подключения;
+- транзакции/сек;
+- размер таблиц.
+
+ClickHouse:
+- строки в orders_analytics;
+- запросы/сек;
+- статус репликации.
+
+ManticoreSearch:
+- количество документов в reviews;
+- время поискового запроса.
+
+Pipeline:
+- время последней синхронизации;
+- количество обработанных записей.
+
+Вывод:
+Мониторинг поднят. Prometheus получает метрики от exporter-а, Grafana автоматически создает datasource и dashboard из JSON/provisioning-конфигов.
