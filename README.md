@@ -12,5 +12,6 @@ SQL/
 ├── idz3/               # ИДЗ-3. Репликация в ClickHouse
 ├── idz4/               # ИДЗ-4. Шардирование в ClickHouse
 ├── idz5/               # ИДЗ-5. ManticoreSearch: полнотекстовый поиск и NoSQL-подход
-└── group1/             # Групповая работа 1. HA-кластер ClickHouse 2x2 с мониторингом и балансировкой
+├── group1/             # Групповая работа 1. HA-кластер ClickHouse 2x2 с мониторингом и балансировкой
+└── group2/             # Групповая работа 2. Multi-DB Pipeline: PostgreSQL + ClickHouse + ManticoreSearch
 ```
