@@ -1,0 +1,156 @@
+ManticoreSearch reviews checks
+==============================
+
+1. RT-индекс reviews создан
+---------------------------
+
+Команда:
+docker compose exec manticore mysql -h0 -P9306 -e "DESC reviews"
+
+Результат:
++-------------+-----------+----------------+
+| Field       | Type      | Properties     |
++-------------+-----------+----------------+
+| id          | bigint    |                |
+| title       | text      | indexed stored |
+| body        | text      | indexed stored |
+| product_id  | uint      |                |
+| customer_id | uint      |                |
+| rating      | uint      |                |
+| created_at  | timestamp |                |
++-------------+-----------+----------------+
+
+
+3. Загрузка отзывов из PostgreSQL
+---------------------------------
+
+Команда:
+POSTGRES_PORT=55432 python3 etl/pg_to_manticore.py
+
+Результат:
+loaded reviews: 10000
+loaded reviews: 20000
+loaded reviews: 30000
+loaded reviews: 40000
+loaded reviews: 50000
+loaded reviews: 60000
+loaded reviews: 70000
+loaded reviews: 80000
+loaded reviews: 90000
+loaded reviews: 100000
+loaded reviews: 110000
+loaded reviews: 120000
+loaded reviews: 130000
+loaded reviews: 140000
+loaded reviews: 150000
+loaded reviews: 160000
+loaded reviews: 170000
+loaded reviews: 180000
+loaded reviews: 190000
+loaded reviews: 200000
+loaded reviews: 200001
+Manticore ETL finished, total reviews loaded: 200001
+
+Сверка с PostgreSQL:
+
+ pg_reviews
+------------
+     200001
+(1 row)
+
+Сверка с ManticoreSearch:
+
++----------+
+| count(*) |
++----------+
+|   200001 |
++----------+
+
+Вывод: все отзывы из PostgreSQL загружены в ManticoreSearch.
+
+
+4. Полнотекстовый поиск
+-----------------------
+
+Команда:
+SELECT id, product_id, customer_id, rating, title
+FROM reviews
+WHERE MATCH('otlichnyy tovar rekomenduyu')
+LIMIT 5;
+
+Результат:
++--------+------------+-------------+--------+-----------------+
+| id     | product_id | customer_id | rating | title           |
++--------+------------+-------------+--------+-----------------+
+| 200001 |         42 |           1 |      5 | Great product   |
+|  40002 |          3 |       40003 |      3 | Expected better |
+|  10002 |          3 |       10003 |      3 | Expected better |
+| 100002 |          3 |           3 |      3 | Expected better |
+| 190002 |          3 |       40003 |      3 | Expected better |
++--------+------------+-------------+--------+-----------------+
+
+
+5. Фильтрация по рейтингу и товару
+----------------------------------
+
+Команда:
+SELECT id, product_id, customer_id, rating, title
+FROM reviews
+WHERE rating >= 4 AND product_id = 42
+LIMIT 5;
+
+Результат:
++--------+------------+-------------+--------+---------------+
+| id     | product_id | customer_id | rating | title         |
++--------+------------+-------------+--------+---------------+
+| 200001 |         42 |           1 |      5 | Great product |
++--------+------------+-------------+--------+---------------+
+
+
+6. Фасетный поиск по рейтингу
+-----------------------------
+
+Команда:
+SELECT id, rating
+FROM reviews
+LIMIT 1
+FACET rating ORDER BY count(*) DESC;
+
+Результат:
++--------+--------+
+| id     | rating |
++--------+--------+
+| 200001 |      5 |
++--------+--------+
++--------+----------+
+| rating | count(*) |
++--------+----------+
+|      5 |    40001 |
+|      2 |    40000 |
+|      3 |    40000 |
+|      4 |    40000 |
+|      1 |    40000 |
++--------+----------+
+
+
+7. Поиск негативных отзывов
+---------------------------
+
+Команда:
+SELECT id, product_id, customer_id, rating, title
+FROM reviews
+WHERE MATCH('brak slomalsya vozvrat')
+LIMIT 5;
+
+Результат:
++--------+------------+-------------+--------+-----------------+
+| id     | product_id | customer_id | rating | title           |
++--------+------------+-------------+--------+-----------------+
+|  90002 |          3 |       40003 |      3 | Expected better |
+|  60002 |          3 |       10003 |      3 | Expected better |
+|      2 |          3 |           3 |      3 | Expected better |
+| 180002 |          3 |       30003 |      3 | Expected better |
+| 150002 |          3 |           3 |      3 | Expected better |
++--------+------------+-------------+--------+-----------------+
+
+Вывод: ManticoreSearch развернут, индекс reviews создан, отзывы загружены, полнотекстовый поиск, фильтры и фасеты работают.

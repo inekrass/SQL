@@ -1,6 +1,6 @@
-# Поднять основные сервисы для первых двух частей: PostgreSQL и ClickHouse.
+# Поднять основные сервисы проекта: PostgreSQL, ClickHouse и ManticoreSearch.
 up:
-	docker compose up -d postgres clickhouse
+	docker compose up -d postgres clickhouse manticore
 
 # Заполнить PostgreSQL тестовыми данными: клиенты, товары, заказы, отзывы.
 pg-seed:
@@ -18,6 +18,18 @@ ch-check:
 		--password analytics_password \
 		--database analytics \
 		--queries-file /sql/ch/03_analytics.sql
+
+# Создать RT-индекс reviews в ManticoreSearch.
+manticore-init:
+	docker compose exec -T manticore mysql -h0 -P9306 < sql/manticore/01_create_index.sql
+
+# Загрузить отзывы из PostgreSQL в ManticoreSearch.
+manticore-etl:
+	python3 etl/pg_to_manticore.py
+
+# Выполнить поисковые запросы по отзывам в ManticoreSearch.
+manticore-check:
+	docker compose exec -T manticore mysql -h0 -P9306 < sql/manticore/02_search_queries.sql
 
 # Остановить и удалить контейнеры проекта.
 down:

@@ -38,6 +38,30 @@ services:
       timeout: 5s
       retries: 20
 
+  manticore:
+    image: manticoresearch/manticore:6.3.6
+    container_name: group2_manticore
+    ports:
+      - "${MANTICORE_HTTP_PORT:-9308}:9308"
+      - "${MANTICORE_SQL_PORT:-9306}:9306"
+    volumes:
+      - manticore_data:/var/lib/manticore
+      - ./sql/manticore:/sql/manticore:ro
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: ["CMD", "mysql", "-h0", "-P9306", "-e", "SHOW TABLES"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
 volumes:
   pg_data:
   ch_data:
+  manticore_data:
