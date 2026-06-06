@@ -43,6 +43,10 @@ monitoring-up:
 monitoring-check:
 	docker compose exec prometheus wget -qO- http://metrics-exporter:9180/metrics
 
+# Запустить сравнительные замеры PostgreSQL, ClickHouse и ManticoreSearch.
+compare:
+	python3 scripts/compare_systems.py
+
 # Остановить и удалить контейнеры проекта.
 down:
 	docker compose down
